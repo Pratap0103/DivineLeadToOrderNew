@@ -90,7 +90,9 @@ const CallTrackerForm = ({
       const data = await mockApi.fetchEnquiryDropdowns();
       const scData = await mockApi.fetchScMaster();
 
-      setLeadSources(data.sources || []);
+      const defaultSources = data?.sources || [];
+      const dynamicSources = scData ? scData.map(s => s.sourceName).filter(Boolean) : [];
+      setLeadSources(Array.from(new Set([...defaultSources, ...dynamicSources])));
       setScMasterData(scData || []);
       setEnquiryStates(data.states || []);
       setSalesTypes(data.salesTypes || []);

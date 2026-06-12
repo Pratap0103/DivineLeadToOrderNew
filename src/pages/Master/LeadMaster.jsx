@@ -35,7 +35,7 @@ function LeadMaster() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("add");
   const [currentItem, setCurrentItem] = useState(null);
-  const [formData, setFormData] = useState({ nameValue: "", personName: "", isOtherSource: false });
+  const [formData, setFormData] = useState({ nameValue: "", personName: "" });
   
   // Filter States
   const [sourceFilter, setSourceFilter] = useState([]);
@@ -69,16 +69,12 @@ function LeadMaster() {
     setModalMode(mode);
     setCurrentItem(item);
     if (item && mode === "edit") {
-      const isSc = activeMaster === "sc";
-      const nameVal = isSc ? item.sourceName : (activeMaster === "group" ? item.groupName : item.stateName);
-      const isOther = isSc && !["Indiamart", "Justdial", "Social Media", "Website", "Referral"].includes(nameVal);
       setFormData({
-        nameValue: nameVal,
-        personName: item.personName,
-        isOtherSource: isOther
+        nameValue: activeMaster === "sc" ? item.sourceName : (activeMaster === "group" ? item.groupName : item.stateName),
+        personName: item.personName
       });
     } else {
-      setFormData({ nameValue: activeMaster === "sc" ? "Indiamart" : "", personName: "", isOtherSource: false });
+      setFormData({ nameValue: "", personName: "" });
     }
     setIsModalOpen(true);
   };
@@ -345,34 +341,7 @@ function LeadMaster() {
             <label className="block text-sm font-medium text-gray-700">
               {activeMaster === "sc" ? "Source Name" : (activeMaster === "group" ? "Group Name" : "State Name")}
             </label>
-            {activeMaster === "sc" ? (
-              <div className="space-y-2">
-                <select
-                  value={formData.isOtherSource ? "Other" : (formData.nameValue || "Indiamart")}
-                  onChange={e => {
-                    const val = e.target.value;
-                    if (val === "Other") {
-                      setFormData({...formData, nameValue: "", isOtherSource: true});
-                    } else {
-                      setFormData({...formData, nameValue: val, isOtherSource: false});
-                    }
-                  }}
-                  className="w-full px-3 py-2 border rounded-md"
-                >
-                  <option value="Indiamart">Indiamart</option>
-                  <option value="Justdial">Justdial</option>
-                  <option value="Social Media">Social Media</option>
-                  <option value="Website">Website</option>
-                  <option value="Referral">Referral</option>
-                  <option value="Other">Other</option>
-                </select>
-                {formData.isOtherSource && (
-                  <input required placeholder="Enter Custom Source Name" value={formData.nameValue} onChange={e => setFormData({...formData, nameValue: e.target.value})} className="w-full px-3 py-2 border rounded-md" />
-                )}
-              </div>
-            ) : (
-              <input required value={formData.nameValue} onChange={e => setFormData({...formData, nameValue: e.target.value})} className="w-full px-3 py-2 border rounded-md" />
-            )}
+            <input required value={formData.nameValue} onChange={e => setFormData({...formData, nameValue: e.target.value})} className="w-full px-3 py-2 border rounded-md" />
           </div>
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">Assign Name (SC Name)</label>

@@ -85,7 +85,6 @@ function Leads() {
 
       if (data) {
         setReceiverNames(data.receivers || [])
-        setLeadSources(data.sources || [])
         setStateOptions(data.states || [])
         setCreditDaysOptions(data.creditDays || [])
         setCreditLimitOptions(data.creditLimits || [])
@@ -97,6 +96,11 @@ function Leads() {
         setScMasterData(scData)
         setScNames(Array.from(new Set(scData.map(s => s.personName).filter(Boolean))))
       }
+
+      // Combine default sources with dynamic ones from SC Master
+      const defaultSources = data?.sources || [];
+      const dynamicSources = scData ? scData.map(s => s.sourceName).filter(Boolean) : [];
+      setLeadSources(Array.from(new Set([...defaultSources, ...dynamicSources])));
     } catch (error) {
       console.error("Error fetching dropdown values:", error)
       // Fallback to default values if needed
